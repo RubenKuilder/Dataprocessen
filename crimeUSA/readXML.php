@@ -51,23 +51,23 @@ if($num > 0) {
 
 		$execution = $xml->addChild("execution");
 		$execution->addChild("id", $id);
-		$execution->addChild("year", $year);
-		$execution->addChild("name", $name);
-		$execution->addChild("age", $age);
-		$execution->addChild("sex", $sex);
-		$execution->addChild("race", $race);
-		$execution->addChild("crime", $crime);
-		$execution->addChild("victimCount", $victim_count);
-		$execution->addChild("victimSex", $victim_sex);
-		$execution->addChild("victimRace", $victim_race);
-		$execution->addChild("county", $county);
-		$execution->addChild("state", $state);
-		$execution->addChild("region", $region);
-		$execution->addChild("method", $method);
-		$execution->addChild("juvenile", $juvenile);
-		$execution->addChild("volunteer", $volunteer);
-		$execution->addChild("federal", $federal);
-		$execution->addChild("foreignNational", $foreign_national);
+		$execution->addChild("date", $Date);
+		$execution->addChild("name", $Name);
+		$execution->addChild("age", $Age);
+		$execution->addChild("sex", $Sex);
+		$execution->addChild("race", $Race);
+		$execution->addChild("crime", $Crime);
+		$execution->addChild("victimCount", $Victim_Count);
+		$execution->addChild("victimSex", $Victim_Sex);
+		$execution->addChild("victimRace", $Victim_Race);
+		$execution->addChild("county", $County);
+		$execution->addChild("state", $State);
+		$execution->addChild("region", $Region);
+		$execution->addChild("method", $Method);
+		$execution->addChild("juvenile", $Juvenile);
+		$execution->addChild("volunteer", $Volunteer);
+		$execution->addChild("federal", $Federal);
+		$execution->addChild("foreignNational", $Foreign_National);
 	}
 
 	http_response_code(200);

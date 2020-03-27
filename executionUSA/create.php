@@ -22,13 +22,13 @@ $data = json_decode(file_get_contents("php://input"));
 
 // make sure data is not empty
 if(
-	!empty($data->date) &&
+	!empty($data->year) &&
 	!empty($data->name) &&
-	!empty($data->age) &&
+	!empty(is_numeric($data->age)) &&
 	!empty($data->sex) &&
 	!empty($data->race) &&
 	!empty($data->crime) &&
-	!empty($data->victimCount) &&
+	!empty(is_numeric($data->victimCount)) &&
 	!empty($data->victimSex) &&
 	!empty($data->victimRace) &&
 	!empty($data->county) &&
@@ -63,7 +63,7 @@ if(
 	if($executionUSA->create()) {
 		http_response_code(201);
 
-		echo json_encode(array("message" => "Product was created."));
+		echo json_encode(array("message" => "Execution was created."));
 	} else {
 		http_response_code(503);
 

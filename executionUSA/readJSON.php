@@ -27,23 +27,23 @@ if($num > 0) {
 
 		$execution_item = array(
 			"id" => $id,
-			"date" => $Date,
-			"name" => $Name,
-			"age" => $Age,
-			"sex" => $Sex,
-			"race" => $Race,
-			"crime" => $Crime,
-			"victimCount" => $Victim_Count,
-			"victimSex" => $Victim_Sex,
-			"victimRace" => $Victim_Race,
-			"county" => $County,
-			"state" => $State,
-			"region" => $Region,
-			"method" => $Method,
-			"juvenile" => $Juvenile,
-			"volunteer" => $Volunteer,
-			"federal" => $Federal,
-			"foreignNational" => $Foreign_National
+			"year" => $year,
+			"name" => $name,
+			"age" => $age,
+			"sex" => $sex,
+			"race" => $race,
+			"crime" => $crime,
+			"victimCount" => $victim_count,
+			"victimSex" => $victim_sex,
+			"victimRace" => $victim_race,
+			"county" => $county,
+			"state" => $state,
+			"region" => $region,
+			"method" => $method,
+			"juvenile" => $juvenile,
+			"volunteer" => $volunteer,
+			"federal" => $federal,
+			"foreignNational" => $foreign_national
 		);
 
 		array_push($executions_arr["executions"], $execution_item);

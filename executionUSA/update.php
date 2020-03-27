@@ -26,7 +26,7 @@ if($data) {
 	$executionUSA->id = $data->id;
 
 	// set execution property values
-	$executionUSA->date = $data->date;
+	$executionUSA->year = $data->year;
 	$executionUSA->name = $data->name;
 	$executionUSA->age = $data->age;
 	$executionUSA->sex = $data->sex;

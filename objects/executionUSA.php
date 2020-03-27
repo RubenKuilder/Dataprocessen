@@ -44,7 +44,6 @@ class ExecutionUSA {
 	// create execution
 	function create() {
 		// query to insert record
-		// $query = "INSERT INTO " . $this->table_name . " SET date=:date, name=:name, age=:age, sex=:sex, race=:race, crime=:crime, victim_count=:victimCount, victim_sex=:victimSex, victim_race=:victimRace";
 		$query = "INSERT INTO " . $this->table_name . " SET date=:date, name=:name, age=:age, sex=:sex, race=:race, crime=:crime, victim_Count=:victimCount, victim_Sex=:victimSex, victim_Race=:victimRace, county=:county, state=:state, region=:region, method=:method, juvenile=:juvenile, volunteer=:volunteer, federal=:federal, foreign_National=:foreignNational";
 
 		// prepare query
