@@ -14,8 +14,11 @@ $db = $database->getConnection();
 // initialize object
 $executionUSA = new ExecutionUSA($db);
 
+$executionUSA->where = $_GET['where'];
+$executionUSA->what = $_GET['what'];
+
 // query executions
-$stmt = $executionUSA->read();
+$stmt = $executionUSA->readOne();
 $num = $stmt->rowCount();
 
 if($num > 0) {

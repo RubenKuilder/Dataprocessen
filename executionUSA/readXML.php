@@ -72,7 +72,7 @@ if($num > 0) {
 
 	http_response_code(200);
 
-	print $xml->saveXML();
+	print $xml->asXML();
 
 } else {
 	http_response_code(404);

@@ -4,9 +4,13 @@ class ExecutionUSA {
 	private $conn;
 	private $table_name = "executionUSA";
 
+	// Get properties
+	public $where;
+	public $what;
+
 	// Object properties
 	public $id;
-	public $date;
+	public $year;
 	public $name;
 	public $age;
 	public $sex;
@@ -41,16 +45,37 @@ class ExecutionUSA {
 		return $stmt;
 	}
 
+	// read one kind of product
+	function readOne() {
+
+		// sanitize before query
+		$this->where=htmlspecialchars(strip_tags($this->where));
+		$this->what=htmlspecialchars(strip_tags($this->what));
+
+		// query
+		$query = "SELECT * FROM " . $this->table_name . " WHERE " . $this->where . " = :what";
+
+		// prepare query statement
+		$stmt = $this->conn->prepare($query);
+
+		// bind values
+		$stmt->bindValue(':what', $this->what, PDO::PARAM_STR);
+
+		$stmt->execute();
+
+		return $stmt;
+	}
+
 	// create execution
 	function create() {
 		// query to insert record
-		$query = "INSERT INTO " . $this->table_name . " SET date=:date, name=:name, age=:age, sex=:sex, race=:race, crime=:crime, victim_Count=:victimCount, victim_Sex=:victimSex, victim_Race=:victimRace, county=:county, state=:state, region=:region, method=:method, juvenile=:juvenile, volunteer=:volunteer, federal=:federal, foreign_National=:foreignNational";
+		$query = "INSERT INTO " . $this->table_name . " SET year=:year, name=:name, age=:age, sex=:sex, race=:race, crime=:crime, victim_Count=:victimCount, victim_Sex=:victimSex, victim_Race=:victimRace, county=:county, state=:state, region=:region, method=:method, juvenile=:juvenile, volunteer=:volunteer, federal=:federal, foreign_National=:foreignNational";
 
 		// prepare query
 		$stmt = $this->conn->prepare($query);
 
 		// sanitize
-		$this->date=htmlspecialchars(strip_tags($this->date));
+		$this->year=htmlspecialchars(strip_tags($this->year));
 		$this->name=htmlspecialchars(strip_tags($this->name));
 		$this->age=htmlspecialchars(strip_tags($this->age));
 		$this->sex=htmlspecialchars(strip_tags($this->sex));
@@ -69,7 +94,7 @@ class ExecutionUSA {
 		$this->foreignNational=htmlspecialchars(strip_tags($this->foreignNational));
 
 		// bind values
-		$stmt->bindParam(":date", $this->date);
+		$stmt->bindParam(":year", $this->year);
 		$stmt->bindParam(":name", $this->name);
 		$stmt->bindParam(":age", $this->age);
 		$stmt->bindParam(":sex", $this->sex);
@@ -98,14 +123,14 @@ class ExecutionUSA {
 	// update the execution
 	function update() {
 		// update query
-		$query = "UPDATE " . $this->table_name . " SET date=:date, name=:name, age=:age, sex=:sex, race=:race, crime=:crime, victim_Count=:victimCount, victim_Sex=:victimSex, victim_Race=:victimRace, county=:county, state=:state, region=:region, method=:method, juvenile=:juvenile, volunteer=:volunteer, federal=:federal, foreign_National=:foreignNational WHERE id = :id";
+		$query = "UPDATE " . $this->table_name . " SET year=:year, name=:name, age=:age, sex=:sex, race=:race, crime=:crime, victim_Count=:victimCount, victim_Sex=:victimSex, victim_Race=:victimRace, county=:county, state=:state, region=:region, method=:method, juvenile=:juvenile, volunteer=:volunteer, federal=:federal, foreign_National=:foreignNational WHERE id = :id";
 
 		// prepare query statement
 		$stmt = $this->conn->prepare($query);
 
 		// sanitize
 		$this->id=htmlspecialchars(strip_tags($this->id));
-		$this->date=htmlspecialchars(strip_tags($this->date));
+		$this->year=htmlspecialchars(strip_tags($this->year));
 		$this->name=htmlspecialchars(strip_tags($this->name));
 		$this->age=htmlspecialchars(strip_tags($this->age));
 		$this->sex=htmlspecialchars(strip_tags($this->sex));
@@ -125,7 +150,7 @@ class ExecutionUSA {
 
 		// bind values
 		$stmt->bindParam(":id", $this->id);
-		$stmt->bindParam(":date", $this->date);
+		$stmt->bindParam(":year", $this->year);
 		$stmt->bindParam(":name", $this->name);
 		$stmt->bindParam(":age", $this->age);
 		$stmt->bindParam(":sex", $this->sex);

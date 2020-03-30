@@ -4,6 +4,10 @@ class CrimeUSA {
 	private $conn;
 	private $table_name = "crimeUSA";
 
+	// Get properties
+	public $where;
+	public $what;
+
 	// Object properties
 	public $id;
 	public $jurisdiction;
@@ -33,6 +37,27 @@ class CrimeUSA {
 		$query = "SELECT * FROM " . $this->table_name;
 
 		$stmt = $this->conn->prepare($query);
+
+		$stmt->execute();
+
+		return $stmt;
+	}
+
+	// read one kind of product
+	function readOne() {
+
+		// sanitize before query
+		$this->where=htmlspecialchars(strip_tags($this->where));
+		$this->what=htmlspecialchars(strip_tags($this->what));
+
+		// query
+		$query = "SELECT * FROM " . $this->table_name . " WHERE " . $this->where . " = :what";
+
+		// prepare query statement
+		$stmt = $this->conn->prepare($query);
+
+		// bind values
+		$stmt->bindValue(':what', $this->what, PDO::PARAM_STR);
 
 		$stmt->execute();
 

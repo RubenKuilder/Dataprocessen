@@ -14,8 +14,11 @@ $db = $database->getConnection();
 // initialize object
 $homelessnessUSA = new HomelessnessUSA($db);
 
+$homelessnessUSA->where = $_GET['where'];
+$homelessnessUSA->what = $_GET['what'];
+
 // query executions
-$stmt = $homelessnessUSA->read();
+$stmt = $homelessnessUSA->readOne();
 $num = $stmt->rowCount();
 
 if($num > 0) {
