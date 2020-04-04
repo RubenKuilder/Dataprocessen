@@ -18,7 +18,7 @@ $executionUSA->where = $_GET['where'];
 $executionUSA->what = $_GET['what'];
 
 // query executions
-$stmt = $executionUSA->readOne();
+$stmt = $executionUSA->search();
 $num = $stmt->rowCount();
 
 if($num > 0) {

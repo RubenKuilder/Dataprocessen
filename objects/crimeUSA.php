@@ -44,7 +44,7 @@ class CrimeUSA {
 	}
 
 	// read one kind of product
-	function readOne() {
+	function search() {
 
 		// sanitize before query
 		$this->where=htmlspecialchars(strip_tags($this->where));

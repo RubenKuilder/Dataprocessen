@@ -17,8 +17,8 @@ $homelessnessUSA = new HomelessnessUSA($db);
 $homelessnessUSA->where = $_GET['where'];
 $homelessnessUSA->what = $_GET['what'];
 
-// query executions
-$stmt = $homelessnessUSA->readOne();
+// query homelessness
+$stmt = $homelessnessUSA->search();
 $num = $stmt->rowCount();
 
 if($num > 0) {

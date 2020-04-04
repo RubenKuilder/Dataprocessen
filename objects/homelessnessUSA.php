@@ -12,10 +12,10 @@ class HomelessnessUSA {
 	public $id;
 	public $year;
 	public $state;
-	public $CoC_Number;
-	public $CoC_Name;
-	public $Measures;
-	public $Count;
+	public $coc_number;
+	public $coc_name;
+	public $measures;
+	public $count;
 
 	// constructor with $db as database connection
 	public function __construct($db) {
@@ -35,7 +35,7 @@ class HomelessnessUSA {
 	}
 
 	// read one kind of product
-	function readOne() {
+	function search() {
 
 		// sanitize before query
 		$this->where=htmlspecialchars(strip_tags($this->where));

@@ -14,8 +14,11 @@ $db = $database->getConnection();
 // initialize object
 $crimeUSA = new CrimeUSA($db);
 
+$crimeUSA->where = $_GET['where'];
+$crimeUSA->what = $_GET['what'];
+
 // query crimes
-$stmt = $crimeUSA->read();
+$stmt = $crimeUSA->search();
 $num = $stmt->rowCount();
 
 if($num > 0) {

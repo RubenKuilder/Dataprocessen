@@ -18,7 +18,7 @@ $crimeUSA->where = $_GET['where'];
 $crimeUSA->what = $_GET['what'];
 
 // query executions
-$stmt = $crimeUSA->readOne();
+$stmt = $crimeUSA->search();
 $num = $stmt->rowCount();
 
 if($num > 0) {

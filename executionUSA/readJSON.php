@@ -33,9 +33,9 @@ if($num > 0) {
 			"sex" => $sex,
 			"race" => $race,
 			"crime" => $crime,
-			"victimCount" => $victim_count,
-			"victimSex" => $victim_sex,
-			"victimRace" => $victim_race,
+			"victim_count" => $victim_count,
+			"victim_sex" => $victim_sex,
+			"victim_race" => $victim_race,
 			"county" => $county,
 			"state" => $state,
 			"region" => $region,
@@ -43,7 +43,7 @@ if($num > 0) {
 			"juvenile" => $juvenile,
 			"volunteer" => $volunteer,
 			"federal" => $federal,
-			"foreignNational" => $foreign_national
+			"foreign_national" => $foreign_national
 		);
 
 		array_push($executions_arr["executions"], $execution_item);
