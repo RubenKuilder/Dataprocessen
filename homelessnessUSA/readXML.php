@@ -1,7 +1,7 @@
 <?php
 // require headers
-header("Acces-Control-Allow-Origin: *");
-header('Content-Type: text/xml; charset=utf-8');
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: text/xml; charset=utf-8");
 
 // include database and object files
 include_once '../config/database.php';
@@ -18,9 +18,11 @@ $homelessnessUSA = new HomelessnessUSA($db);
 $stmt = $homelessnessUSA->read();
 $num = $stmt->rowCount();
 
+// If data is found, process it into an array
 if($num > 0) {
 	$xml = new SimpleXMLElement("<homelessnessUSA></homelessnessUSA>");
 	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		// Extract $row
 		extract($row);
 
 		$homeless = $xml->addChild("homeless");
@@ -33,12 +35,16 @@ if($num > 0) {
 		$xmlCount = $homeless->addChild("count", $count);
 	}
 
+	// Response code - 200 OK
 	http_response_code(200);
 
+	// Show xml
 	echo $xml->asXML();
 
 } else {
+	// Response code - 404 NOT FOUND
 	http_response_code(404);
 
+	// Show error message
 	$xml = new SimpleXMLElement("<message>No homeless entries were found.</message>");
 }

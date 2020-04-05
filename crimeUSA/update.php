@@ -10,7 +10,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 include_once '../config/database.php';
 include_once '../objects/crimeUSA.php';
 
-// instantiate database and product object
+// instantiate database object
 $database = new Database();
 $db = $database->getConnection();
 
@@ -18,9 +18,17 @@ $db = $database->getConnection();
 $crimeUSA = new CrimeUSA($db);
 
 // get posted data
-$data = json_decode(file_get_contents("php://input"));
+if(json_decode(file_get_contents("php://input")) != NULL) {
+	// POST data is JSON format
+	$data = json_decode(file_get_contents("php://input"));
+} else {
+	// POST data is XML format
+	$xmlRequestContents = simplexml_load_string(file_get_contents("php://input"));
+	$xmlInJSON  = json_encode($xmlRequestContents);
+	$data = json_decode($xmlInJSON);
+}
 
-
+// If posted data is found, update database
 if($data) {
 	//set ID property of crime to be edited
 	$crimeUSA->id = $data->id;
@@ -43,19 +51,20 @@ if($data) {
 	$crimeUSA->vehicle_theft = $data->vehicle_theft;
 
 	if($crimeUSA->update()) {
-		// set response code to 200 (ok)
+		// Response code - 200 OK
 		http_response_code(200);
 
-		// tell the used the crime was updated
+		// Show success message
 		echo json_encode(array("message" => "Crime was updated."));
 	} else {
-		// set response code to 503 (service unavailable)
+		// Response code - 503 SERVICE UNAVAILABLE
 		http_response_code(503);
 
-		// tell the used the crime wasn't updated
+		// Show error message
 		echo json_encode(array("message" => "Unable to update crime."));
 	}
 } else {
+	// Show error message
 	echo json_encode(array("message" => "Make sure to provide all data."));
 }
 

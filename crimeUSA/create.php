@@ -10,7 +10,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 include_once '../config/database.php';
 include_once '../objects/crimeUSA.php';
 
-// instantiate database and product object
+// instantiate database object
 $database = new Database();
 $db = $database->getConnection();
 
@@ -18,7 +18,15 @@ $db = $database->getConnection();
 $crimeUSA = new CrimeUSA($db);
 
 // get posted data
-$data = json_decode(file_get_contents("php://input"));
+if(json_decode(file_get_contents("php://input")) != NULL) {
+	// POST data is JSON format
+	$data = json_decode(file_get_contents("php://input"));
+} else {
+	// POST data is XML format
+	$xmlRequestContents = simplexml_load_string(file_get_contents("php://input"));
+	$xmlInJSON  = json_encode($xmlRequestContents);
+	$data = json_decode($xmlInJSON);
+}
 
 // make sure data is not empty
 if(
@@ -38,7 +46,7 @@ if(
 	!empty(is_numeric($data->larceny)) &&
 	!empty(is_numeric($data->vehicle_theft))
 ) {
-	// set execution property values
+	// set crime property values
 	$crimeUSA->jurisdiction = $data->jurisdiction;
 	$crimeUSA->year = $data->year;
 	$crimeUSA->crime_reporting_change = $data->crime_reporting_change;
@@ -55,19 +63,25 @@ if(
 	$crimeUSA->larceny = $data->larceny;
 	$crimeUSA->vehicle_theft = $data->vehicle_theft;
 
-	// create the execution
+	// create the crime
 	if($crimeUSA->create()) {
+		// Response code - 201 CREATED
 		http_response_code(201);
 
+		// Show success message
 		echo json_encode(array("message" => "Crime was created."));
 	} else {
+		// Response code - 503 SERVICE UNAVAILABLE
 		http_response_code(503);
 
+		// Show error message
 		echo json_encode(array("message" => "Unable to create crime."));
 	}
 } else {
+	// Response code - 400 BAD REQUEST
 	http_response_code(400);
 
+	// Show error message
 	echo json_encode(array("message" => "Unable to create crime. Data is incomplete."));
 }
 ?>

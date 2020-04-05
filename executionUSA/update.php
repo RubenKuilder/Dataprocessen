@@ -10,17 +10,25 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 include_once '../config/database.php';
 include_once '../objects/executionUSA.php';
 
-// instantiate database and product object
+// instantiate database object
 $database = new Database();
 $db = $database->getConnection();
 
 // initialize object
 $executionUSA = new ExecutionUSA($db);
 
-// get id of execution to be edited
-$data = json_decode(file_get_contents("php://input"));
+// get posted data
+if(json_decode(file_get_contents("php://input")) != NULL) {
+	// POST data is JSON format
+	$data = json_decode(file_get_contents("php://input"));
+} else {
+	// POST data is XML format
+	$xmlRequestContents = simplexml_load_string(file_get_contents("php://input"));
+	$xmlInJSON  = json_encode($xmlRequestContents);
+	$data = json_decode($xmlInJSON);
+}
 
-
+// If posted data is found, update database
 if($data) {
 	//set ID property of execution to be edited
 	$executionUSA->id = $data->id;
@@ -32,9 +40,9 @@ if($data) {
 	$executionUSA->sex = $data->sex;
 	$executionUSA->race = $data->race;
 	$executionUSA->crime = $data->crime;
-	$executionUSA->victimCount = $data->victimCount;
-	$executionUSA->victimSex = $data->victimSex;
-	$executionUSA->victimRace = $data->victimRace;
+	$executionUSA->victim_count = $data->victim_count;
+	$executionUSA->victim_sex = $data->victim_sex;
+	$executionUSA->victim_race = $data->victim_race;
 	$executionUSA->county = $data->county;
 	$executionUSA->state = $data->state;
 	$executionUSA->region = $data->region;
@@ -42,22 +50,26 @@ if($data) {
 	$executionUSA->juvenile = $data->juvenile;
 	$executionUSA->volunteer = $data->volunteer;
 	$executionUSA->federal = $data->federal;
-	$executionUSA->foreignNational = $data->foreignNational;
+	$executionUSA->foreign_national = $data->foreign_national;
 
 	if($executionUSA->update()) {
-		// set response code to 200 (ok)
+		// Response code - 200 OK
 		http_response_code(200);
 
-		// tell the used the execution was updated
+		// Show success message
 		echo json_encode(array("message" => "Execution was updated."));
 	} else {
-		// set response code to 503 (service unavailable)
+		// Response code - 503 SERVICE UNAVAILABLE
 		http_response_code(503);
 
-		// tell the used the execution wasn't updated
+		// Show error message
 		echo json_encode(array("message" => "Unable to update execution."));
 	}
 } else {
+	// Response code - 400 BAD REQUEST
+	http_response_code(400);
+
+	// Show error message
 	echo json_encode(array("message" => "Make sure to provide all data."));
 }
 

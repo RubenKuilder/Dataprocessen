@@ -10,7 +10,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 include_once '../config/database.php';
 include_once '../objects/homelessnessUSA.php';
 
-// instantiate database and product object
+// instantiate database object
 $database = new Database();
 $db = $database->getConnection();
 
@@ -18,23 +18,40 @@ $db = $database->getConnection();
 $homelessnessUSA = new HomelessnessUSA($db);
 
 // get posted data
-$data = json_decode(file_get_contents("php://input"));
-
+if(json_decode(file_get_contents("php://input")) != NULL) {
+	// POST data is JSON format
+	$data = json_decode(file_get_contents("php://input"));
+} else {
+	// POST data is XML format
+	$xmlRequestContents = simplexml_load_string(file_get_contents("php://input"));
+	$xmlInJSON  = json_encode($xmlRequestContents);
+	$data = json_decode($xmlInJSON);
+}
 //set ID property of homelessness entry to be edited
 $homelessnessUSA->id = $data->id;
 
-if($homelessnessUSA->delete()) {
-	// set response code to 200 (ok)
-	http_response_code(200);
+if(
+	!empty(is_numeric($data->id))
+) {
+	if($homelessnessUSA->delete()) {
+		// Response code - 200 OK
+		http_response_code(200);
 
-	// tell the used the homelessness entry was updated
-	echo json_encode(array("message" => "Homelessness entry was deleted."));
+		// Show success message
+		echo json_encode(array("message" => "Homelessness entry was deleted."));
+	} else {
+		// Response code - 503 SERVICE UNAVAILABLE
+		http_response_code(503);
+
+		// Show error message
+		echo json_encode(array("message" => "Unable to delete homelessness entry."));
+	}
 } else {
-	// set response code to 503 (service unavailable)
-	http_response_code(503);
+	// Response code - 400 BAD REQUEST
+	http_response_code(400);
 
-	// tell the used the homelessness entry wasn't updated
-	echo json_encode(array("message" => "Unable to delete homelessness entry."));
+	// Show error message
+	echo json_encode(array("message" => "Unable to delete homeless entry. Data is incomplete."));
 }
 
 ?>

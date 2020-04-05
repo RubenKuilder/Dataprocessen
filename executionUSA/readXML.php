@@ -1,13 +1,13 @@
 <?php
 // require headers
-header("Acces-Control-Allow-Origin: *");
-header('Content-Type: text/xml; charset=utf-8');
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: text/xml; charset=utf-8");
 
 // include database and object files
 include_once '../config/database.php';
 include_once '../objects/executionUSA.php';
 
-// instantiate database and product object
+// instantiate database object
 $database = new Database();
 $db = $database->getConnection();
 
@@ -18,14 +18,14 @@ $executionUSA = new ExecutionUSA($db);
 $stmt = $executionUSA->read();
 $num = $stmt->rowCount();
 
+// If data is found, process it into an array
 if($num > 0) {
 	$xml = new SimpleXMLElement("<executionUSA></executionUSA>");
-	// $xml->addAttribute('', '');
 	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		// Extract $row
 		extract($row);
 
 		$execution = $xml->addChild('execution');
-		// $execution->addAttribute('', '');
 		$xmlID = $execution->addChild("id", $id);
 		$xmlYear = $execution->addChild("year", $year);
 		$xmlName = $execution->addChild("name", $name);
@@ -46,13 +46,16 @@ if($num > 0) {
 		$xmlForeignNational = $execution->addChild("foreign_national", $foreign_national);
 	}
 
+	// Response code - 200 OK
 	http_response_code(200);
 
+	// Show xml
 	echo $xml->asXML();
-
 } else {
+	// Response code - 404 NOT FOUND
 	http_response_code(404);
 
+	// Show error message
 	$xml = new SimpleXMLElement("<message>No executions were found.</message>");
 }
 ?>

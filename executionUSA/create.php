@@ -10,7 +10,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 include_once '../config/database.php';
 include_once '../objects/executionUSA.php';
 
-// instantiate database and product object
+// instantiate database object
 $database = new Database();
 $db = $database->getConnection();
 
@@ -18,7 +18,15 @@ $db = $database->getConnection();
 $executionUSA = new ExecutionUSA($db);
 
 // get posted data
-$data = json_decode(file_get_contents("php://input"));
+if(json_decode(file_get_contents("php://input")) != NULL) {
+	// POST data is JSON format
+	$data = json_decode(file_get_contents("php://input"));
+} else {
+	// POST data is XML format
+	$xmlRequestContents = simplexml_load_string(file_get_contents("php://input"));
+	$xmlInJSON  = json_encode($xmlRequestContents);
+	$data = json_decode($xmlInJSON);
+}
 
 // make sure data is not empty
 if(
@@ -28,9 +36,9 @@ if(
 	!empty($data->sex) &&
 	!empty($data->race) &&
 	!empty($data->crime) &&
-	!empty(is_numeric($data->victimCount)) &&
-	!empty($data->victimSex) &&
-	!empty($data->victimRace) &&
+	!empty(is_numeric($data->victim_count)) &&
+	!empty($data->victim_sex) &&
+	!empty($data->victim_race) &&
 	!empty($data->county) &&
 	!empty($data->state) &&
 	!empty($data->region) &&
@@ -38,7 +46,7 @@ if(
 	!empty($data->juvenile) &&
 	!empty($data->volunteer) &&
 	!empty($data->federal) &&
-	!empty($data->foreignNational)
+	!empty($data->foreign_national)
 ) {
 	// set execution property values
 	$executionUSA->year = $data->year;
@@ -47,9 +55,9 @@ if(
 	$executionUSA->sex = $data->sex;
 	$executionUSA->race = $data->race;
 	$executionUSA->crime = $data->crime;
-	$executionUSA->victimCount = $data->victimCount;
-	$executionUSA->victimSex = $data->victimSex;
-	$executionUSA->victimRace = $data->victimRace;
+	$executionUSA->victim_count = $data->victim_count;
+	$executionUSA->victim_sex = $data->victim_sex;
+	$executionUSA->victim_race = $data->victim_race;
 	$executionUSA->county = $data->county;
 	$executionUSA->state = $data->state;
 	$executionUSA->region = $data->region;
@@ -57,21 +65,27 @@ if(
 	$executionUSA->juvenile = $data->juvenile;
 	$executionUSA->volunteer = $data->volunteer;
 	$executionUSA->federal = $data->federal;
-	$executionUSA->foreignNational = $data->foreignNational;
+	$executionUSA->foreign_national = $data->foreign_national;
 
 	// create the execution
 	if($executionUSA->create()) {
+		// Response code - 201 CREATED
 		http_response_code(201);
 
+		// Show success message
 		echo json_encode(array("message" => "Execution was created."));
 	} else {
+		// Response code - 503 SERVICE UNAVAILABLE
 		http_response_code(503);
 
+		// Show error message
 		echo json_encode(array("message" => "Unable to create execution."));
 	}
 } else {
+	// Response code - 400 BAD REQUEST
 	http_response_code(400);
 
+	// Show error message
 	echo json_encode(array("message" => "Unable to create execution. Data is incomplete."));
 }
 ?>

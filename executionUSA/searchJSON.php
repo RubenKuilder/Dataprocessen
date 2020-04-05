@@ -7,7 +7,7 @@ header("Content-Type: application/json; charset=UTF-8");
 include_once '../config/database.php';
 include_once '../objects/executionUSA.php';
 
-// instantiate database and product object
+// instantiate database object
 $database = new Database();
 $db = $database->getConnection();
 
@@ -21,11 +21,13 @@ $executionUSA->what = $_GET['what'];
 $stmt = $executionUSA->search();
 $num = $stmt->rowCount();
 
+// If data is found, process it into an array
 if($num > 0) {
 	$executions_arr = array();
 	$executions_arr["executions"] = array();
 
 	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		// Extract $row
 		extract($row);
 
 		$execution_item = array(
@@ -36,9 +38,9 @@ if($num > 0) {
 			"sex" => $sex,
 			"race" => $race,
 			"crime" => $crime,
-			"victimCount" => $victim_count,
-			"victimSex" => $victim_sex,
-			"victimRace" => $victim_race,
+			"victim_count" => $victim_count,
+			"victim_sex" => $victim_sex,
+			"victim_race" => $victim_race,
 			"county" => $county,
 			"state" => $state,
 			"region" => $region,
@@ -46,18 +48,23 @@ if($num > 0) {
 			"juvenile" => $juvenile,
 			"volunteer" => $volunteer,
 			"federal" => $federal,
-			"foreignNational" => $foreign_national
+			"foreign_national" => $foreign_national
 		);
 
+		// Push data into executions_arr["executions"]
 		array_push($executions_arr["executions"], $execution_item);
 	}
 
+	// Response code - 200 OK
 	http_response_code(200);
 
+	// Show executions_arr JSON
 	echo json_encode($executions_arr);
 } else {
+	// Response code - 404 NOT FOUND
 	http_response_code(404);
 
+	// Show error message
 	echo json_encode(
 		array("message" => "No executions were found.")
 	);

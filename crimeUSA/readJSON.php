@@ -7,7 +7,7 @@ header("Content-Type: application/json; charset=UTF-8");
 include_once '../config/database.php';
 include_once '../objects/crimeUSA.php';
 
-// instantiate database and product object
+// instantiate database object
 $database = new Database();
 $db = $database->getConnection();
 
@@ -18,11 +18,13 @@ $crimeUSA = new CrimeUSA($db);
 $stmt = $crimeUSA->read();
 $num = $stmt->rowCount();
 
+// If data is found, process it into an array
 if($num > 0) {
 	$crimes_arr = array();
 	$crimes_arr["crimes"] = array();
 
 	while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		// Extract $row
 		extract($row);
 
 		$crime_item = array(
@@ -44,15 +46,19 @@ if($num > 0) {
 			"vehicle_theft" => $vehicle_theft
 		);
 
+		// Push data into crimes_arr["crimes"]
 		array_push($crimes_arr["crimes"], $crime_item);
 	}
-
+	// Response code - 200 OK
 	http_response_code(200);
 
+	// Show executions_arr JSON
 	echo json_encode($crimes_arr);
 } else {
+	// Response code - 404 NOT FOUND
 	http_response_code(404);
 
+	// Show error message
 	echo json_encode(
 		array("message" => "No crimes were found.")
 	);
